@@ -104,5 +104,5 @@ contract ToDo {
             }
         }
         return pendingCount;
-    }
+    }  // remaining tasks : priority ke hisab se pending tasks ko dikhana
 }

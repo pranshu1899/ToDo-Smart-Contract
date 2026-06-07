@@ -1,0 +1,23 @@
+{
+  "name": "todo_list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.13",
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.7",
+    "@types/chai": "^5.2.3",
+    "@types/node": "^22.19.20",
+    "chai": "^6.2.2",
+    "ethers": "^6.16.0",
+    "hardhat": "^3.8.0",
+    "typescript": "~6.0.3"
+  },
+  "type": "module"
+}

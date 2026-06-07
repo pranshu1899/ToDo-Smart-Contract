@@ -22,14 +22,14 @@ contract ToDo {
         count++;
     }
 
-    function completeTask(uint256 taskId) public {
+    function toggleTask(uint256 taskId) public {
         
         Task[] storage tasks = userTasks[msg.sender];
         
         for(uint256 i = 0 ; i< tasks.length ; i++){
-            require(!tasks[i].completed, "Already completed");
+           
             if(tasks[i].id == taskId){
-                tasks[i].completed = true;
+                tasks[i].completed = !tasks[i].completed;
                 return;
             }
         }
@@ -54,6 +54,16 @@ contract ToDo {
         tasks[target] = tasks[tasks.length-1];
         tasks.pop();
     }
+
+    function updateTask(uint256 taskId, string memory newContent) public {
+        Task[] storage tasks = userTasks[msg.sender];
+        for(uint256 i=0; i<tasks.length; i++){
+    if(tasks[i].id == taskId ){
+        tasks[i].content = newContent;
+        return; 
+    }
+} 
+    revert taskNotFound();   }
 
     function getTask() public view returns(Task[] memory){
         return userTasks[msg.sender];    

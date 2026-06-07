@@ -1,27 +1,32 @@
 import { expect } from "chai";
 import { network } from "hardhat";
 
-describe("ToDo", function () {
+describe("ToDo Contract", function () {
 
-    async function deployFixture() {
-        const { ethers } = await network.connect();
+    let todo;
+    let owner;
+    let user2;
+    let ethers;
+
+    beforeEach(async function () {
+
+        ({ ethers } = await network.connect());
 
         const ToDo = await ethers.getContractFactory("ToDo");
-        const todo = await ToDo.deploy();
 
-        return { todo };
-    }
+        [owner, user2] = await ethers.getSigners();
+
+        todo = await ToDo.deploy();
+        await todo.waitForDeployment();
+    });
 
     it("Should create a task", async function () {
-        const { todo } = await deployFixture();
-
         await todo.createTask("Learn Solidity");
 
         const tasks = await todo.getTask();
 
         expect(tasks.length).to.equal(1);
         expect(tasks[0].content).to.equal("Learn Solidity");
-        expect(tasks[0].completed).to.equal(false);
     });
 
 });

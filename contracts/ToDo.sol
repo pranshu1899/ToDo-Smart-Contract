@@ -12,6 +12,9 @@ contract ToDo {
     mapping(address => Task[]) private userTasks;
     uint256 count = 0;
 
+    
+    error TaskNotFound();
+
     function createTask(string memory _content) public {
         Task memory newTask = Task ({
             id: count,
@@ -33,10 +36,9 @@ contract ToDo {
                 return;
             }
         }
-        revert("Task not found");
+        revert TaskNotFound();
     }
 
-    error taskNotFound();
     function deleteTask(uint256 taskId) public {
         Task[] storage tasks = userTasks[msg.sender];
         uint target;
@@ -49,7 +51,7 @@ contract ToDo {
             }
         }
         if(!found){
-            revert taskNotFound();
+            revert TaskNotFound();
         }
         tasks[target] = tasks[tasks.length-1];
         tasks.pop();
@@ -58,14 +60,49 @@ contract ToDo {
     function updateTask(uint256 taskId, string memory newContent) public {
         Task[] storage tasks = userTasks[msg.sender];
         for(uint256 i=0; i<tasks.length; i++){
-    if(tasks[i].id == taskId ){
-        tasks[i].content = newContent;
-        return; 
-    }
-} 
-    revert taskNotFound();   }
+          if(tasks[i].id == taskId ){
+          tasks[i].content = newContent;
+          return; 
+          }
+        } 
+      revert TaskNotFound();
+    }     
 
-    function getTask() public view returns(Task[] memory){
+    function getTask() public view returns(Task[] memory){  // sare tasks ke liye 
         return userTasks[msg.sender];    
         }
+    
+    function getTaskById(uint256 taskId) public view returns(Task memory){
+        Task[] storage tasks = userTasks[msg.sender];
+        for(uint256 i=0; i<tasks.length; i++){
+          if(tasks[i].id == taskId ){
+          return tasks[i]; 
+          }
+        } 
+      revert TaskNotFound();
+    }
+
+    function getTotalTasks() public view returns(uint256){
+        return userTasks[msg.sender].length;
+    }
+    function getCompletedTasks() public view returns(uint256){
+        Task[] storage tasks = userTasks[msg.sender];
+        uint256 completedCount = 0;
+        for(uint256 i=0 ; i<tasks.length ; i++){
+            if(tasks[i].completed){
+                completedCount++;
+            }
+        }
+        return completedCount;
+    }
+    function getPendingTasks() public view returns(uint256){
+        Task[] storage tasks = userTasks[msg.sender];
+        uint256 pendingCount = 0;
+        for(uint256 i =0; i<tasks.length ; i++){
+            if(!tasks[i].completed){
+                pendingCount++;
+            }
+        }
+        return pendingCount;
+    }
 }

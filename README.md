@@ -1,22 +1,39 @@
-# Blockchain To-Do List Smart Contract
+# ToDo Smart Contract
 
-A decentralized To-Do List application built with Solidity. This project allows users to create, manage, complete, and delete tasks directly on the blockchain while maintaining separate task lists for each wallet address.
+A decentralized ToDo application built with Solidity, Hardhat, TypeScript, and Ethers.js. This project was created to learn the complete smart contract development workflow, from writing and deploying contracts to interacting with them using Ethers.js.
 
 ## Features
 
+### Task Management
+
 * Create new tasks
-* Mark tasks as completed
-* Delete existing tasks
-* Retrieve all tasks associated with a wallet
-* Unique task IDs for each task
-* User-specific task storage using mappings
-* Custom error handling for invalid operations
+* Update existing tasks
+* Delete tasks
+* Toggle task completion status
+
+### Task Retrieval
+
+* Get all tasks of a user
+* Get a task by ID
+* Get total task count
+* Get completed task count
+* Get pending task count
+
+### User Isolation
+
+Each user's tasks are stored separately using:
+
+```solidity
+mapping(address => Task[]) private userTasks;
+```
+
+Only the owner of a task list can access and modify their tasks.
+
+---
 
 ## Smart Contract Structure
 
-### Task
-
-Each task contains:
+### Task Struct
 
 ```solidity
 struct Task {
@@ -28,126 +45,203 @@ struct Task {
 
 ### Storage
 
-Tasks are stored separately for each user:
-
 ```solidity
 mapping(address => Task[]) private userTasks;
 ```
 
-This ensures that every wallet address can access only its own tasks.
+---
+
+## Tech Stack
+
+### Blockchain
+
+* Solidity ^0.8.20
+
+### Development Environment
+
+* Hardhat 3
+* TypeScript
+
+### Web3 Library
+
+* Ethers.js v6
+
+---
 
 ## Functions
 
-### addTask()
+### Write Functions
+
+#### Create Task
+
+```solidity
+createTask(string memory _content)
+```
 
 Creates a new task.
 
-```solidity
-addTask(string memory _content)
-```
-
-### completeTask()
-
-Marks a task as completed.
+#### Toggle Task Status
 
 ```solidity
-completeTask(uint256 taskId)
+toggleTask(uint256 taskId)
 ```
 
-### deleteTask()
+Marks a task as completed or pending.
 
-Deletes a task using the swap-and-pop technique for gas efficiency.
+#### Update Task
+
+```solidity
+updateTask(uint256 taskId, string memory newContent)
+```
+
+Updates task content.
+
+#### Delete Task
 
 ```solidity
 deleteTask(uint256 taskId)
 ```
 
-### getTasks()
+Removes a task from storage.
+
+---
+
+### Read Functions
+
+#### Get All Tasks
+
+```solidity
+getTask()
+```
 
 Returns all tasks belonging to the caller.
 
+#### Get Task By ID
+
 ```solidity
-getTasks()
+getTaskById(uint256 taskId)
 ```
 
-## Concepts Used
+Returns a specific task.
+
+#### Get Total Tasks
+
+```solidity
+getTotalTasks()
+```
+
+Returns total number of tasks.
+
+#### Get Completed Tasks
+
+```solidity
+getCompletedTasks()
+```
+
+Returns number of completed tasks.
+
+#### Get Pending Tasks
+
+```solidity
+getPendingTasks()
+```
+
+Returns number of pending tasks.
+
+---
+
+## Custom Errors
+
+```solidity
+error TaskNotFound();
+```
+
+Used instead of revert strings to reduce gas costs.
+
+---
+
+## What I Learned
+
+### Solidity
 
 * Structs
 * Mappings
 * Dynamic Arrays
-* msg.sender
 * Storage vs Memory
 * Custom Errors
-* Array Manipulation
-* Swap-and-Pop Deletion
-* Function Visibility
-* State Variables
+* msg.sender
+* CRUD Operations
 
-## Tech Stack
+### Hardhat
 
-* Solidity
-* Hardhat
-* Ethers.js
-* Chai
-* Mocha
+* Project Setup
+* Compilation
+* Local Blockchain Node
+* Deployment Scripts
 
-## Project Structure
+### Ethers.js
 
-```text
-├── contracts
-│   └── ToDoList.sol
-│
-├── test
-│   └── ToDoList.js
-│
-├── scripts
-│
-├── hardhat.config.js
-│
-└── README.md
-```
+* Providers
+* Wallets
+* Signers
+* ABI and Bytecode
+* Contract Factory
+* Contract Deployment
+* Contract Objects
+* Read Functions
+* Write Functions
+* Transaction Responses
+* tx.wait()
+* BigInt Handling
+* Nonce Basics
 
-## Running Locally
+### Blockchain Concepts
 
-Install dependencies:
+* Transaction Lifecycle
+* Mempool
+* Block Confirmation
+* Contract Deployment Flow
+* State Changes
+* Smart Contract Interaction
 
-```bash
-npm install
-```
+---
 
-Compile the contract:
+## Deployment
 
-```bash
-npx hardhat compile
-```
-
-Run tests:
-
-```bash
-npx hardhat test
-```
-
-Start a local Hardhat node:
+Start local blockchain:
 
 ```bash
 npx hardhat node
 ```
 
+Deploy contract:
+
+```bash
+npx tsx scripts/deploy.ts
+```
+
+Interact with deployed contract:
+
+```bash
+npx tsx scripts/interact.ts
+```
+
+---
+
 ## Future Improvements
 
-* Task editing
-* Task priorities
-* Categories and tags
-* Timestamps
-* Event emissions
-* Pagination
-* Frontend integration with React and Ethers.js
-* Deployment to Sepolia Testnet
+* Event Emission
+* Unit Tests
+* Gas Optimization
+* Frontend Integration (React)
+* MetaMask Connection
+* Task Priority System
+* Task Categories
+* Due Dates
+* On-chain Analytics
 
-## Learning Outcomes
+---
 
-This project was built to strengthen understanding of Solidity fundamentals, smart contract design, state management, mappings, arrays, and Hardhat-based development workflows.
+## Project Goal
 
-## License
-
-MIT License
+The goal of this project is not only to build a ToDo application but also to gain a deep understanding of smart contract development, deployment, and interaction using Ethers.js and Hardhat.

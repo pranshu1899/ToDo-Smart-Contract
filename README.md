@@ -1,27 +1,29 @@
-# ToDo Smart Contract
+# Decentralized ToDo DApp
 
-A decentralized ToDo application built with Solidity, Hardhat, TypeScript, and Ethers.js. This project was created to learn the complete smart contract development workflow, from writing and deploying contracts to interacting with them using Ethers.js.
+A full-stack decentralized ToDo application built using Solidity, Hardhat, Ethers.js, React, and MetaMask.
+
+This project was developed as a hands-on learning journey to understand the complete blockchain application lifecycle, from smart contract development and deployment to frontend integration and real user interaction through MetaMask.
+
+---
 
 ## Features
 
 ### Task Management
 
-* Create new tasks
-* Update existing tasks
-* Delete tasks
-* Toggle task completion status
+* Create Tasks
+* Update Task Content
+* Delete Tasks
+* Toggle Task Completion Status
 
-### Task Retrieval
+### Task Analytics
 
-* Get all tasks of a user
-* Get a task by ID
-* Get total task count
-* Get completed task count
-* Get pending task count
+* View Total Tasks
+* View Completed Tasks
+* View Pending Tasks
 
 ### User Isolation
 
-Each user's tasks are stored separately using:
+Each wallet address maintains its own independent task list.
 
 ```solidity
 mapping(address => Task[]) private userTasks;
@@ -31,9 +33,9 @@ Only the owner of a task list can access and modify their tasks.
 
 ---
 
-## Smart Contract Structure
+## Smart Contract Architecture
 
-### Task Struct
+### Task Structure
 
 ```solidity
 struct Task {
@@ -43,17 +45,36 @@ struct Task {
 }
 ```
 
-### Storage
+### Storage Design
 
 ```solidity
 mapping(address => Task[]) private userTasks;
 ```
 
+### Events
+
+```solidity
+event TaskCreated(
+    uint256 id,
+    string content
+);
+```
+
+Used to notify the frontend whenever a new task is created.
+
+### Custom Errors
+
+```solidity
+error TaskNotFound();
+```
+
+Custom errors are used instead of revert strings to reduce gas consumption.
+
 ---
 
 ## Tech Stack
 
-### Blockchain
+### Smart Contracts
 
 * Solidity ^0.8.20
 
@@ -62,13 +83,22 @@ mapping(address => Task[]) private userTasks;
 * Hardhat 3
 * TypeScript
 
-### Web3 Library
+### Blockchain Interaction
 
 * Ethers.js v6
 
+### Frontend
+
+* React
+* JavaScript
+
+### Wallet Integration
+
+* MetaMask
+
 ---
 
-## Functions
+## Smart Contract Functions
 
 ### Write Functions
 
@@ -86,12 +116,15 @@ Creates a new task.
 toggleTask(uint256 taskId)
 ```
 
-Marks a task as completed or pending.
+Switches a task between completed and pending.
 
 #### Update Task
 
 ```solidity
-updateTask(uint256 taskId, string memory newContent)
+updateTask(
+    uint256 taskId,
+    string memory newContent
+)
 ```
 
 Updates task content.
@@ -130,7 +163,7 @@ Returns a specific task.
 getTotalTasks()
 ```
 
-Returns total number of tasks.
+Returns total task count.
 
 #### Get Completed Tasks
 
@@ -138,7 +171,7 @@ Returns total number of tasks.
 getCompletedTasks()
 ```
 
-Returns number of completed tasks.
+Returns completed task count.
 
 #### Get Pending Tasks
 
@@ -146,17 +179,49 @@ Returns number of completed tasks.
 getPendingTasks()
 ```
 
-Returns number of pending tasks.
+Returns pending task count.
 
 ---
 
-## Custom Errors
+## Frontend Features
 
-```solidity
-error TaskNotFound();
+### Wallet Connection
+
+Users can connect their MetaMask wallet directly from the React frontend.
+
+### Task Creation
+
+Users can create tasks through the UI.
+
+### Task Editing
+
+Tasks can be updated without interacting directly with the contract.
+
+### Task Deletion
+
+Tasks can be removed from the frontend.
+
+### Task Completion
+
+Tasks can be marked as completed or pending using a toggle button.
+
+### Statistics Dashboard
+
+The frontend displays:
+
+* Total Tasks
+* Completed Tasks
+* Pending Tasks
+
+### Event Listening
+
+The frontend listens for contract events using Ethers.js:
+
+```javascript
+contract.on("TaskCreated", ...)
 ```
 
-Used instead of revert strings to reduce gas costs.
+This provides real-time feedback when new tasks are created.
 
 ---
 
@@ -169,44 +234,60 @@ Used instead of revert strings to reduce gas costs.
 * Dynamic Arrays
 * Storage vs Memory
 * Custom Errors
+* Events
 * msg.sender
-* CRUD Operations
+* CRUD Smart Contract Design
 
 ### Hardhat
 
 * Project Setup
 * Compilation
-* Local Blockchain Node
 * Deployment Scripts
+* Local Blockchain Node
+* Contract Testing Workflow
 
 ### Ethers.js
 
 * Providers
+* BrowserProvider
 * Wallets
 * Signers
-* ABI and Bytecode
-* Contract Factory
+* Contract Factories
 * Contract Deployment
 * Contract Objects
-* Read Functions
-* Write Functions
+* Read Operations
+* Write Operations
 * Transaction Responses
+* Transaction Receipts
+* Event Reading
+* Event Listening
 * tx.wait()
 * BigInt Handling
 * Nonce Basics
 
+### React + Web3
+
+* React State Management
+* MetaMask Integration
+* Wallet Connection Flow
+* Smart Contract Interaction
+* Dynamic UI Updates
+* Event-Driven Updates
+
 ### Blockchain Concepts
 
 * Transaction Lifecycle
+* State Changes
 * Mempool
 * Block Confirmation
 * Contract Deployment Flow
-* State Changes
-* Smart Contract Interaction
+* Event Logs
+* Transaction Receipts
+* Frontend ↔ Smart Contract Communication
 
 ---
 
-## Deployment
+## Local Development
 
 Start local blockchain:
 
@@ -220,28 +301,46 @@ Deploy contract:
 npx tsx scripts/deploy.ts
 ```
 
-Interact with deployed contract:
+Run frontend:
 
 ```bash
-npx tsx scripts/interact.ts
+npm run dev
 ```
 
 ---
 
 ## Future Improvements
 
-* Event Emission
-* Unit Tests
+* Hardhat Unit Tests
 * Gas Optimization
-* Frontend Integration (React)
-* MetaMask Connection
+* Sepolia Deployment
+* Vercel Deployment
 * Task Priority System
 * Task Categories
 * Due Dates
-* On-chain Analytics
+* Responsive UI Design
+* Advanced Event Handling
 
 ---
 
-## Project Goal
+## Project Outcome
 
-The goal of this project is not only to build a ToDo application but also to gain a deep understanding of smart contract development, deployment, and interaction using Ethers.js and Hardhat.
+This project helped me understand the complete workflow of building a decentralized application:
+
+```text
+Smart Contract
+      ↓
+Compilation
+      ↓
+Deployment
+      ↓
+Ethers.js Interaction
+      ↓
+MetaMask Integration
+      ↓
+React Frontend
+      ↓
+Real User Interaction
+```
+
+The goal was not simply to build a ToDo application, but to gain practical experience in full-stack Web3 development and understand how blockchain applications work end-to-end.

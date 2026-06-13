@@ -9,6 +9,8 @@ contract ToDo {
         bool completed;
     }
 
+    event TaskCreated(uint id, string content);
+
     mapping(address => Task[]) private userTasks;
     uint256 count = 0;
 
@@ -23,6 +25,7 @@ contract ToDo {
         });
         userTasks[msg.sender].push(newTask);
         count++;
+        emit TaskCreated(newTask.id, newTask.content);
     }
 
     function toggleTask(uint256 taskId) public {

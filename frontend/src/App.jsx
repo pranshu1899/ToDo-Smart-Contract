@@ -18,6 +18,11 @@ function App() {
 
   const [editText, setEditText] = useState("");
 
+  // statistics
+  const [total, setTotal] = useState(0);
+  const [completed, setCompleted] = useState(0);
+  const [pending, setPending] = useState(0);
+
   //connect wallet wahi kaam karwa raha jo interact.ts karwata tha bs ab frontend and metamask ka role aa gya
   // -----------------------------------------
   async function connectWallet() {
@@ -80,16 +85,30 @@ function App() {
   //  //toString isiliye kiya nahi to bigInt me hota to 0n types aate sirf 0 ke liye toString
   // const tasks = await todo.getTask();
   // console.log(tasks);
+  const allTasks = await todoContract.getTask();
+  setTasks(allTasks);
+  
+  const totalTasks = await todoContract.getTotalTasks();
+  const completedTasks = await todoContract.getCompletedTasks();
+  const pendingTasks = await todoContract.getPendingTasks();
+
+setTotal(totalTasks.toString());
+setCompleted(completedTasks.toString());
+setPending(pendingTasks.toString());
   }
 
   // -----------------------------------------
   async function createTask(){
+     if (!taskText.trim()) return;
+
     const tx = await todo.createTask(taskText);
     await tx.wait();
     setTaskText("");
 
     const allTasks = await todo.getTask();
     setTasks(allTasks);
+
+    await loadStats();
   }
 
   // --------------------------------------------
@@ -100,6 +119,7 @@ function App() {
     const allTasks = await todo.getTask();
     setTasks(allTasks);
 
+    await loadStats();
   }
 
   // --------------------------------------------
@@ -109,6 +129,8 @@ function App() {
 
     const allTasks = await todo.getTask();
     setTasks(allTasks);
+    await loadStats();
+
   }
 
   // ---------------------------------------------
@@ -119,6 +141,19 @@ function App() {
     const allTasks = await todo.getTask();
     setTasks(allTasks);
     setEditText("");
+
+    await loadStats();
+  }
+
+  // ------------------------------------------
+  async function loadStats(){
+    const totalTasks = await todo.getTotalTasks();
+    const completedTasks = await todo.getCompletedTasks();
+    const pendingTasks = await todo.getPendingTasks();
+
+    setTotal(totalTasks.toString());
+    setCompleted(completedTasks.toString());
+    setPending(pendingTasks.toString());
   }
 
   return (
@@ -132,6 +167,12 @@ function App() {
       <button onClick={connectWallet}>
         Connect Wallet
       </button>
+
+      <h3>Total: {total}</h3>
+
+<h3>Completed: {completed}</h3>
+
+<h3>Pending: {pending}</h3>
 
       {/* ---- Create task from ui */}
       <input type="text" 

@@ -16,6 +16,8 @@ function App() {
   const [taskText, setTaskText] = useState("");
   const [tasks, setTasks] = useState([]);
 
+  const [editText, setEditText] = useState("");
+
   //connect wallet wahi kaam karwa raha jo interact.ts karwata tha bs ab frontend and metamask ka role aa gya
   // -----------------------------------------
   async function connectWallet() {
@@ -100,6 +102,25 @@ function App() {
 
   }
 
+  // --------------------------------------------
+  async function deleteTask(taskId){
+    const tx = await todo.deleteTask(taskId);
+    await tx.wait();
+
+    const allTasks = await todo.getTask();
+    setTasks(allTasks);
+  }
+
+  // ---------------------------------------------
+  async function updateTask(taskId){
+    const tx = await todo.updateTask(taskId,editText);
+    await tx.wait();
+
+    const allTasks = await todo.getTask();
+    setTasks(allTasks);
+    setEditText("");
+  }
+
   return (
     <div>
       <h1>ToDo DApp</h1>
@@ -121,15 +142,28 @@ function App() {
         Add Task
       </button>
 
+      <input type="text"
+      value={editText}
+      onChange = {(e) => setEditText(e.target.value)}
+      />
+
       {
         tasks.map((task) => (
           <div key={task.id.toString()}>
-            {task.completed ? "✅" : "❌"} {task.content}
+            {task.completed ? "✅" : "❌"} {" "} {task.content}
 
             <button onClick={
               () => toggleTask(task.id)
             }
             >Toggle</button>
+
+            <button onClick={
+              () => deleteTask(task.id)
+            }>Remove</button>
+
+            <button onClick={
+              () => updateTask(task.id)
+            }>Edit</button>
           </div>
         ))
       }

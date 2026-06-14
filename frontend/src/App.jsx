@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import ToDoArtifact from "./contract/ToDo.json";
+import "./App.css";
 
 const abi = ToDoArtifact.abi;
 const address =
@@ -157,57 +158,97 @@ setPending(pendingTasks.toString());
   }
 
   return (
-    <div>
+    <div className="container">
       <h1>ToDo DApp</h1>
 
-      <h3>
+      <h3 className="wallet">
         Wallet: {wallet ? wallet : "Not Connected"} 
       </h3>  
 {/* print iski wjh se ho r */}
-      <button onClick={connectWallet}>
+      <button className="btn" onClick={connectWallet}>
         Connect Wallet
       </button>
 
-      <h3>Total: {total}</h3>
-
-<h3>Completed: {completed}</h3>
-
-<h3>Pending: {pending}</h3>
+      <div className="stats">
+        <div className="card">
+          <h2>{total}</h2> <p>Total</p>
+        </div>
+        <div className="card">
+          <h2>{completed}</h2> <p>Completed</p>
+        </div>
+        <div className="card">
+          <h2>{pending}</h2> <p>Pending</p>
+        </div>
+      </div>
+      
 
       {/* ---- Create task from ui */}
-      <input type="text" 
-      value={taskText}
-      onChange = {(e) => setTaskText(e.target.value)}
-      />
-      <button onClick={createTask}>
-        Add Task
-      </button>
+      <div className="input-section">
 
-      <input type="text"
+          <input
+            className="task-input"
+            type="text"
+            value={taskText}
+            onChange={(e)=>setTaskText(e.target.value)}
+            placeholder="Add a task..."
+          />
+
+          <button
+            className="btn"
+            onClick={createTask}
+           >Add Task</button>
+       </div>
+
+      {/* <input type="text"
       value={editText}
       onChange = {(e) => setEditText(e.target.value)}
-      />
+      /> */}
 
-      {
-        tasks.map((task) => (
-          <div key={task.id.toString()}>
-            {task.completed ? "✅" : "❌"} {" "} {task.content}
-
-            <button onClick={
-              () => toggleTask(task.id)
-            }
-            >Toggle</button>
-
-            <button onClick={
-              () => deleteTask(task.id)
-            }>Remove</button>
-
-            <button onClick={
-              () => updateTask(task.id)
-            }>Edit</button>
+      <div className="task-list">
+       {
+        tasks.map((task)=>(
+          
+          <div
+            className="task-card"
+            key={task.id.toString()}
+          >
+      
+            <div>
+              {task.completed ? "✅" : "❌"}{" "}
+              {task.content}
+            </div>
+      
+            <div className="task-actions">
+      
+              <button
+                className="small-btn"
+                onClick={() => toggleTask(task.id)}
+              >
+                Toggle
+              </button>
+      
+              <button
+                className="small-btn"
+                onClick={() => deleteTask(task.id)}
+              >
+                Delete
+              </button>
+      
+              <button
+                className="small-btn"
+                onClick={() => updateTask(task.id)}
+              >
+                Edit
+              </button>
+      
+            </div>
+      
           </div>
+      
         ))
-      }
+       }
+
+</div>
 
     </div>
   );

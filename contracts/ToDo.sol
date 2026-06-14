@@ -3,10 +3,17 @@ pragma solidity ^0.8.20;
 
 contract ToDo {
 
+    enum Priority{
+        Low,
+        Medium,
+        High
+    }
+
     struct Task{
         uint256 id;
         string content;
         bool completed;
+        Priority priority;
     }
 
     event TaskCreated(uint id, string content);
@@ -17,11 +24,12 @@ contract ToDo {
     
     error TaskNotFound();
 
-    function createTask(string memory _content) public {
+    function createTask(string memory _content, Priority _priority) public {
         Task memory newTask = Task ({
             id: count,
             content : _content,
-            completed : false
+            completed : false,
+            priority : _priority
         });
         userTasks[msg.sender].push(newTask);
         count++;
@@ -56,7 +64,9 @@ contract ToDo {
         if(!found){
             revert TaskNotFound();
         }
-        tasks[target] = tasks[tasks.length-1];
+        for(uint256 i = target; i<tasks.length-1;i++){
+            tasks[i]=tasks[i+1];
+        }
         tasks.pop();
     }
 

@@ -5,7 +5,7 @@ import "./App.css";
 
 const abi = ToDoArtifact.abi;
 const address =
-"0x5FbDB2315678afecb367f032d93F642f64180aa3";
+"0xA191727d7f27530D404d31DD4708d81C930e6FB8";
 
 function App() {
 
@@ -24,6 +24,9 @@ function App() {
   const [total, setTotal] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [pending, setPending] = useState(0);
+
+  //priority feature
+  const [priority, setPriority] = useState(0);
 
   //connect wallet wahi kaam karwa raha jo interact.ts karwata tha bs ab frontend and metamask ka role aa gya
   // -----------------------------------------
@@ -103,7 +106,7 @@ setPending(pendingTasks.toString());
   async function createTask(){
      if (!taskText.trim()) return;
 
-    const tx = await todo.createTask(taskText);
+    const tx = await todo.createTask(taskText,priority);
     await tx.wait();
     setTaskText("");
 
@@ -196,6 +199,15 @@ setPending(pendingTasks.toString());
             placeholder="Add a task..."
           />
 
+          <select
+            value={priority}
+            onChange={(e) => setPriority(Number(e.target.value))
+            }>
+              <option value ={0}>Low</option>
+              <option value ={1}>Medium</option>
+              <option value ={2}>High</option>
+            </select>
+
           <button
             className="btn"
             onClick={createTask}
@@ -225,7 +237,16 @@ setPending(pendingTasks.toString());
                     onChange={(e) => setEditText(e.target.value)
                     }/>
                 ) : (
-                  task.content
+                  <>
+                  {task.content}
+                  {" "}
+                  {task.priority == 0 && 
+                   <span className="priority low">Low</span> }
+                   {task.priority == 1 && 
+                   <span className="priority medium">Medium</span> }
+                   {task.priority == 2 && 
+                   <span className="priority high">High</span> }
+                  </>
                 )
               }
             </div>
@@ -240,7 +261,7 @@ setPending(pendingTasks.toString());
               </button>
       
               <button
-                className="small-btn"
+                className="delete-btn"
                 onClick={() => deleteTask(task.id)}
               >
                 Delete
@@ -249,7 +270,7 @@ setPending(pendingTasks.toString());
               {
                 editingId === task.id ? (
                   <button
-                    className="small-btn"
+                    className="save-btn"
                     onClick={() => updateTask(task.id)}
                     >Save</button>
                 ) : (

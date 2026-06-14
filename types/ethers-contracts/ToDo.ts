@@ -6,9 +6,9 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 export declare namespace ToDo {
       
-    export type TaskStruct = {id: BigNumberish, content: string, completed: boolean}
+    export type TaskStruct = {id: BigNumberish, content: string, completed: boolean, priority: BigNumberish}
 
-    export type TaskStructOutput = [id: bigint, content: string, completed: boolean] & {id: bigint, content: string, completed: boolean }
+    export type TaskStructOutput = [id: bigint, content: string, completed: boolean, priority: bigint] & {id: bigint, content: string, completed: boolean, priority: bigint }
   
     }
 
@@ -17,7 +17,7 @@ export declare namespace ToDo {
 
     getEvent(nameOrSignatureOrTopic: "TaskCreated"): EventFragment;
 
-    encodeFunctionData(functionFragment: 'createTask', values: [string]): string;
+    encodeFunctionData(functionFragment: 'createTask', values: [string, BigNumberish]): string;
 encodeFunctionData(functionFragment: 'deleteTask', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'getCompletedTasks', values?: undefined): string;
 encodeFunctionData(functionFragment: 'getPendingTasks', values?: undefined): string;
@@ -86,7 +86,7 @@ decodeFunctionResult(functionFragment: 'updateTask', data: BytesLike): Result;
     
     
     createTask: TypedContractMethod<
-      [_content: string, ],
+      [_content: string, _priority: BigNumberish, ],
       [void],
       'nonpayable'
     >
@@ -160,7 +160,7 @@ decodeFunctionResult(functionFragment: 'updateTask', data: BytesLike): Result;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
     getFunction(nameOrSignature: 'createTask'): TypedContractMethod<
-      [_content: string, ],
+      [_content: string, _priority: BigNumberish, ],
       [void],
       'nonpayable'
     >;

@@ -19,5 +19,8 @@
     "hardhat": "^3.8.0",
     "typescript": "~6.0.3"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
 }

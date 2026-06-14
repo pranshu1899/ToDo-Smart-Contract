@@ -5,7 +5,7 @@ import "./App.css";
 
 const abi = ToDoArtifact.abi;
 const address =
-"0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e";
+"0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 function App() {
 
@@ -18,6 +18,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
 
   const [editText, setEditText] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   // statistics
   const [total, setTotal] = useState(0);
@@ -136,12 +137,14 @@ setPending(pendingTasks.toString());
 
   // ---------------------------------------------
   async function updateTask(taskId){
+    if(!editText.trim()) return;
     const tx = await todo.updateTask(taskId,editText);
     await tx.wait();
 
     const allTasks = await todo.getTask();
     setTasks(allTasks);
     setEditText("");
+    setEditingId(null);
 
     await loadStats();
   }
@@ -215,7 +218,16 @@ setPending(pendingTasks.toString());
       
             <div>
               {task.completed ? "✅" : "❌"}{" "}
-              {task.content}
+              {
+                editingId === task.id ? (
+                  <input
+                    value = {editText}
+                    onChange={(e) => setEditText(e.target.value)
+                    }/>
+                ) : (
+                  task.content
+                )
+              }
             </div>
       
             <div className="task-actions">
@@ -234,12 +246,21 @@ setPending(pendingTasks.toString());
                 Delete
               </button>
       
-              <button
-                className="small-btn"
-                onClick={() => updateTask(task.id)}
-              >
-                Edit
-              </button>
+              {
+                editingId === task.id ? (
+                  <button
+                    className="small-btn"
+                    onClick={() => updateTask(task.id)}
+                    >Save</button>
+                ) : (
+                  <button
+                    className="small-btn"
+                    onClick = {() => {
+                      setEditingId(task.id);
+                      setEditingText(task.content);
+                    }}>Edit</button>
+                )
+              }
       
             </div>
       
